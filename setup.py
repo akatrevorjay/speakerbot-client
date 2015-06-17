@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-__pkg_name__ = 'speakerbot-client'
+__pkg_name__ = 'speakerbotclient'
 
 import os
 
