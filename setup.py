@@ -17,8 +17,14 @@ setup(
     include_package_data=True,
     description='Client for Speakerbot',
     install_requires=[
-        'requests'
+        'requests',
+        'click'
     ],
+    entry_points={
+        'console_scripts': [
+            'speakerbot = speakerbotclient.cli:speakerbot'
+        ]
+    },
     classifiers=[
         'Development Status :: 3 - Alpha',
         'License :: OSI Approved :: GNU General Public License v2 (GPLv2)',
