@@ -11,7 +11,7 @@ base_dir = os.path.dirname(__file__)
 setup(
     author='Trevor Joynson',
     author_email='github@skywww.net',
-    name='speakerbot-client',
+    name='speakerbotclient',
     version=version,
     packages=find_packages(exclude=['tests', 'tests.*']),
     include_package_data=True,
