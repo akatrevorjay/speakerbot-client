@@ -56,7 +56,7 @@ def mine(client, amount=1000, image='w5SlJ6q.gif', concurrency=10):
         miner.start()
 
     log.info('Running gevent loop')
-    gevent.sleep(0)
+    gevent.joinall(miners)
 
 
 def main():
