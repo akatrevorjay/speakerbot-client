@@ -3,6 +3,9 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
+import logging
+log = logging.getLogger(__name__)
+
 import requests
 
 
@@ -86,5 +89,6 @@ class SpeakerbotClient(object):
         """
         iterations = int(amount / 10)
         for _ in xrange(iterations):
+            log.debug('Mining speakerbucks (downgoat/upboat loop)')
             self._downgoat(image)
             self._upboat(image)
