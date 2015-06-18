@@ -1,35 +1,45 @@
-import sys
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
+
 import requests
 
 
 class SpeakerbotClient(object):
-
+    """Speakerbot Client API"""
 
     def __init__(self, base_uri='http://speakerbot.local'):
         self.base_uri = base_uri
 
-
     def _absolutify_url(self, uri):
         return '{}/{}'.format(self.base_uri, uri)
-
-
-    def _downgoat(self, image='w5SlJ6q.gif'):
-        self._get('image/{}/downgoat'.format(image))
-
 
     def _get(self, uri):
         uri = self._absolutify_url(uri)
         return requests.get(uri)
 
-
     def _post(self, uri, data):
         uri = self._absolutify_url(uri)
         return requests.post(uri, data=data)
 
+    def _downvote(self, image='w5SlJ6q.gif'):
+        """Downvotes an image, yo
+        :param image: Image filename
+        :return:
+        """
+        self._get('image/{}/downgoat'.format(image))
 
-    def _upboat(self, image='w5SlJ6q.gif'):
+    _downgoat = _downvote
+
+    def _upvote(self, image='w5SlJ6q.gif'):
+        """Upvotes an image, yo
+        :param image: Image filename
+        :return:
+        """
         self._get('image/{}/upboat'.format(image))
 
+    _upboat = _upvote
 
     def say(self, text, record_utterance=True):
         """
@@ -40,7 +50,6 @@ class SpeakerbotClient(object):
         """
         self._post('say/', {'speech-text': text, 'record_utterance': str(record_utterance).lower()})
 
-
     def play(self, sound='dry-fart'):
         """
         Play a sound, yo
@@ -49,7 +58,6 @@ class SpeakerbotClient(object):
         """
         self._get('play_sound/{}'.format(sound))
 
-
     def mine_speakerbucks(self, amount=1000, image='w5SlJ6q.gif'):
         """
         Mine some speakerbucks, yo
@@ -57,9 +65,7 @@ class SpeakerbotClient(object):
         :param image: Image to use for mining speakerbucks
         :return:
         """
-        iterations = amount / 10
-        i = 0
-        while i < iterations:
+        iterations = int(amount / 10)
+        for _ in xrange(iterations):
             self._downgoat(image)
             self._upboat(image)
-            i += 1
