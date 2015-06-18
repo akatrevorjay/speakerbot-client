@@ -22,7 +22,7 @@ setup(
     ],
     entry_points={
         'console_scripts': [
-            'speakerbot = speakerbotclient.cli:speakerbot'
+            'speakerbotclient = speakerbotclient.cli:speakerbot'
         ]
     },
     classifiers=[
