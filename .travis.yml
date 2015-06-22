@@ -1,6 +1,11 @@
 language: python
 python:
   - "2.7"
-install: "python setup.py install"
-# command to run tests
-script: "python setup.py test"
+  - "pypy"
+install:
+  - pip install coveralls
+  - python setup.py -q install
+script:
+  coverage run --source=speakerbotclient setup.py test
+after_success:
+  coveralls
