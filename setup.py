@@ -18,7 +18,8 @@ setup(
     description='Client for Speakerbot',
     install_requires=[
         'requests',
-        'click'
+        'click',
+        'pymarkovchain',
     ],
     entry_points={
         'console_scripts': [

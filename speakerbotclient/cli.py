@@ -25,6 +25,14 @@ def say(ctx, text, record):
 
 
 @speakerbot.command()
+@click.option('--keyword', default=None, help='Whether speakerbot will include the word in the random phrase')
+@click.pass_context
+def random(ctx, keyword):
+    spkr = ctx.obj
+    spkr.random(keyword=keyword)
+
+
+@speakerbot.command()
 @click.option('--sound', default='dry-fart', help='What sound do you want speakerbot to play?')
 @click.pass_context
 def play(ctx, sound):
