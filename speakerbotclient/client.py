@@ -4,17 +4,26 @@ from __future__ import print_function
 from __future__ import unicode_literals
 
 import logging
-log = logging.getLogger(__name__)
-
 import requests
+
+
+LOG = logging.getLogger(__name__)
+DEFAULT_TIMEOUT = 10
+DEFAULT_BASE_URI = 'http://speakerbot.local'
+DEFAULT_RECORD_UTTERANCE = True
+DEFAULT_SOUND = 'dry-fart'
+DEFAULT_SPEAKERBUCKS_AMOUNT = 500
+DEFAULT_IMAGE = 'w5SlJ6q.gif'
 
 
 class SpeakerbotClient(object):
     """Speakerbot Client API"""
 
-    def __init__(self, base_uri='http://speakerbot.local'):
-        # Hint: Set base_uri to the IP to avoid timely mDNS lookups.
+
+    def __init__(self, base_uri=DEFAULT_BASE_URI, timeout=DEFAULT_TIMEOUT):
         self.base_uri = base_uri
+        self.timeout = timeout
+
 
     def _absolutify_url(self, uri):
         """
@@ -24,6 +33,7 @@ class SpeakerbotClient(object):
         """
         return '{}/{}'.format(self.base_uri, uri)
 
+
     def _get(self, uri):
         """
         Send a GET request, yo
@@ -31,7 +41,11 @@ class SpeakerbotClient(object):
         :return: request object
         """
         uri = self._absolutify_url(uri)
-        return requests.get(uri)
+        try:
+            return requests.get(uri, timeout=self.timeout)
+        except:
+            pass
+
 
     def _post(self, uri, data):
         """
@@ -41,9 +55,13 @@ class SpeakerbotClient(object):
         :return: request object
         """
         uri = self._absolutify_url(uri)
-        return requests.post(uri, data=data)
+        try:
+            return requests.post(uri, data=data, timeout=self.timeout)
+        except:
+            pass
 
-    def _downvote(self, image='w5SlJ6q.gif'):
+
+    def _downgoat(self, image='w5SlJ6q.gif'):
         """
         Downvotes an image, yo
         :param image: Image filename
@@ -51,9 +69,11 @@ class SpeakerbotClient(object):
         """
         return self._get('image/{}/downgoat'.format(image))
 
-    _downgoat = _downvote
 
-    def _upvote(self, image='w5SlJ6q.gif'):
+    _downvote = _downgoat
+
+
+    def _upboat(self, image='w5SlJ6q.gif'):
         """
         Upvotes an image, yo
         :param image: Image filename
@@ -61,9 +81,11 @@ class SpeakerbotClient(object):
         """
         return self._get('image/{}/upboat'.format(image))
 
-    _upboat = _upvote
 
-    def say(self, text, record_utterance=True):
+    _upvote = _upboat
+
+
+    def say(self, text, record_utterance=DEFAULT_RECORD_UTTERANCE):
         """
         Say a thing, yo
         :param text: Thing to say
@@ -72,7 +94,8 @@ class SpeakerbotClient(object):
         """
         self._post('say/', {'speech-text': text, 'record_utterance': str(record_utterance).lower()})
 
-    def play(self, sound='dry-fart'):
+
+    def play(self, sound=DEFAULT_SOUND):
         """
         Play a sound, yo
         :param sound: Sound to play
@@ -80,7 +103,8 @@ class SpeakerbotClient(object):
         """
         self._get('play_sound/{}'.format(sound))
 
-    def mine_speakerbucks(self, amount=1000, image='w5SlJ6q.gif'):
+
+    def mine_speakerbucks(self, amount=DEFAULT_SPEAKERBUCKS_AMOUNT, image=DEFAULT_IMAGE):
         """
         Mine some speakerbucks, yo
         :param amount: Multiple of 10. Number of speakerbucks to mine
@@ -89,6 +113,6 @@ class SpeakerbotClient(object):
         """
         iterations = int(amount / 10)
         for _ in xrange(iterations):
-            log.debug('Mining speakerbucks (downgoat/upboat loop)')
+            LOG.debug('Mining speakerbucks (downgoat/upboat loop)')
             self._downgoat(image)
             self._upboat(image)

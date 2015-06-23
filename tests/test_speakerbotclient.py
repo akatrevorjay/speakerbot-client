@@ -1,6 +1,9 @@
-from speakerbotclient import SpeakerbotClient
 from mock import Mock, patch
+from speakerbotclient import SpeakerbotClient
+from speakerbotclient.client import DEFAULT_TIMEOUT, DEFAULT_BASE_URI, \
+    DEFAULT_RECORD_UTTERANCE, DEFAULT_SOUND, DEFAULT_SPEAKERBUCKS_AMOUNT, DEFAULT_IMAGE
 from unittest import TestCase
+
 
 class SpeakerbotClientTest(TestCase):
     """ Provides an instantiated SpeakerbotClient
@@ -16,14 +19,21 @@ class TestInit(SpeakerbotClientTest):
     """
 
 
-    def test_defaults_base_uri(self):
-        self.assertEqual('http://speakerbot.local', self.client.base_uri)
+    def test_defaults_base_uri_and_timeout(self):
+        self.assertEqual(DEFAULT_BASE_URI, self.client.base_uri)
+        self.assertEqual(DEFAULT_TIMEOUT, self.client.timeout)
 
 
     def test_allows_base_uri_override(self):
         base_uri = 'foo'
         self.client = SpeakerbotClient(base_uri)
         self.assertEqual(base_uri, self.client.base_uri)
+
+
+    def test_allows_timeout_override(self):
+        timeout = 100
+        self.client = SpeakerbotClient(timeout=timeout)
+        self.assertEqual(timeout, self.client.timeout)
 
 
 class TestAbsolutifyUrl(SpeakerbotClientTest):
@@ -55,7 +65,7 @@ class TestDowngoat(SpeakerbotClientTest):
 
     def test_defaults_image(self):
         self.client._downgoat()
-        self.client._get.assert_called_once_with('image/w5SlJ6q.gif/downgoat')
+        self.client._get.assert_called_once_with('image/{}/downgoat'.format(DEFAULT_IMAGE))
 
 
 class TestGet(SpeakerbotClientTest):
@@ -69,7 +79,7 @@ class TestGet(SpeakerbotClientTest):
         self.client._absolutify_url = Mock(return_value=uri)
         self.client._get(uri)
         self.client._absolutify_url.assert_called_once_with(uri)
-        mock_requests.get.assert_called_once_with(uri)
+        mock_requests.get.assert_called_once_with(uri, timeout=self.client.timeout)
 
 
 class TestPost(SpeakerbotClientTest):
@@ -84,7 +94,7 @@ class TestPost(SpeakerbotClientTest):
         self.client._absolutify_url = Mock(return_value=uri)
         self.client._post(uri, data)
         self.client._absolutify_url.assert_called_once_with(uri)
-        mock_requests.post.assert_called_once_with(uri, data=data)
+        mock_requests.post.assert_called_once_with(uri, data=data, timeout=self.client.timeout)
 
 
 class TestUpboat(SpeakerbotClientTest):
@@ -105,7 +115,7 @@ class TestUpboat(SpeakerbotClientTest):
 
     def test_defaults_image(self):
         self.client._upboat()
-        self.client._get.assert_called_once_with('image/w5SlJ6q.gif/upboat')
+        self.client._get.assert_called_once_with('image/{}/upboat'.format(DEFAULT_IMAGE))
 
 
 class TestSay(SpeakerbotClientTest):
@@ -145,7 +155,7 @@ class TestSay(SpeakerbotClientTest):
         self.client._post.assert_called_once_with('say/',
             {
                 'speech-text': text,
-                'record_utterance': 'true'
+                'record_utterance': str(DEFAULT_RECORD_UTTERANCE).lower()
             })
 
 
@@ -167,7 +177,7 @@ class TestPlay(SpeakerbotClientTest):
 
     def test_defaults_sound(self):
         self.client.play()
-        self.client._get.assert_called_once_with('play_sound/dry-fart')
+        self.client._get.assert_called_once_with('play_sound/{}'.format(DEFAULT_SOUND))
 
 
 class TestMineSpeakerbucks(SpeakerbotClientTest):
@@ -192,7 +202,7 @@ class TestMineSpeakerbucks(SpeakerbotClientTest):
 
     def test_defaults_amount_and_image(self):
         self.client.mine_speakerbucks()
-        self.assertEqual(100, self.client._downgoat.call_count)
-        self.assertEqual(100, self.client._upboat.call_count)
+        self.assertEqual(DEFAULT_SPEAKERBUCKS_AMOUNT / 10, self.client._downgoat.call_count)
+        self.assertEqual(DEFAULT_SPEAKERBUCKS_AMOUNT / 10, self.client._upboat.call_count)
         self.client._downgoat.assert_called_with('w5SlJ6q.gif')
         self.client._upboat.assert_called_with('w5SlJ6q.gif')
