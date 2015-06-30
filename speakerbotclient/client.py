@@ -116,3 +116,15 @@ class SpeakerbotClient(object):
             LOG.debug('Mining speakerbucks (downgoat/upboat loop)')
             self._downgoat(image)
             self._upboat(image)
+
+    def random(self, keyword=None):
+        """
+        Generates a random phrase and has speakerbot say it.
+        :param keyword: Keyword to include in phrase
+        :return:
+        """
+        import speakerbotclient.text_generator as gen
+        phrase = gen.generateSingle(keyword=keyword)
+        LOG.debug("generated phrase:\n{}".format(phrase))
+        self.say(phrase)
+
