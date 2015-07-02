@@ -60,3 +60,7 @@ target/
 .idea/
 markovdb
 resources/**/*
+
+tweets.out
+
+*.swp
