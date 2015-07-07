@@ -20,6 +20,7 @@ setup(
         'requests',
         'click',
         'pymarkovchain',
+        'python-twitter',
     ],
     entry_points={
         'console_scripts': [
