@@ -112,7 +112,7 @@ class SpeakerbotClient(object):
         :return:
         """
         iterations = int(amount / 10)
-        for _ in xrange(iterations):
+        for _ in range(iterations):
             LOG.debug('Mining speakerbucks (downgoat/upboat loop)')
             self._downgoat(image)
             self._upboat(image)

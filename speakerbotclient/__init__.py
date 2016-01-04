@@ -1,1 +1,1 @@
-from client import SpeakerbotClient
+from .client import SpeakerbotClient
